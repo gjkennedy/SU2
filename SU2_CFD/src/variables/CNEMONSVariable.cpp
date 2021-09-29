@@ -52,17 +52,6 @@ CNEMONSVariable::CNEMONSVariable(su2double val_pressure,
                                                                        config,
                                                                        fluidmodel) {
 
-  Temperature_Ref = config->GetTemperature_Ref();
-  Viscosity_Ref   = config->GetViscosity_Ref();
-  Viscosity_Inf   = config->GetViscosity_FreeStreamND();
-  Prandtl_Lam     = config->GetPrandtl_Lam();
-
-  DiffusionCoeff.resize(nPoint, nSpecies)  = su2double(0.0);
-  LaminarViscosity.resize(nPoint)          = su2double(0.0);
-  ThermalCond.resize(nPoint)               = su2double(0.0);
-  ThermalCond_ve.resize(nPoint)            = su2double(0.0);
-
-  Max_Lambda_Visc.resize(nPoint) = su2double(0.0);
   inv_TimeScale = config->GetModVel_FreeStream() / config->GetRefLength();
 
   Vorticity.resize(nPoint,3)     = su2double(0.0);
@@ -73,24 +62,59 @@ CNEMONSVariable::CNEMONSVariable(su2double val_pressure,
   Vortex_Tilting.resize(nPoint)  = su2double(0.0);
   Max_Lambda_Visc.resize(nPoint) = su2double(0.0);
 
+  Temperature_Ref = config->GetTemperature_Ref();
+  Viscosity_Ref   = config->GetViscosity_Ref();
+  Viscosity_Inf   = config->GetViscosity_FreeStreamND();
+  Prandtl_Lam     = config->GetPrandtl_Lam();
+
+  DiffusionCoeff.resize(nPoint, nSpecies)  = su2double(0.0);
+  LaminarViscosity.resize(nPoint)          = su2double(0.0);
+  ThermalCond.resize(nPoint)               = su2double(0.0);
+  ThermalCond_ve.resize(nPoint)            = su2double(0.0);
 }
 
-bool CNEMONSVariable::SetPrimVar(unsigned long iPoint, CFluidModel *FluidModel) {
+bool CNEMONSVariable::SetVorticity(void) {
 
-  unsigned short iVar, iSpecies;
+  for (unsigned long iPoint=0; iPoint<nPoint; ++iPoint) {
+
+    su2double u_y = Gradient_Primitive(iPoint, VEL_INDEX  , 1);
+    su2double v_x = Gradient_Primitive(iPoint, VEL_INDEX+1, 0);
+    su2double u_z = 0.0;
+    su2double v_z = 0.0;
+    su2double w_x = 0.0;
+    su2double w_y = 0.0;
+
+    if (nDim == 3) {
+      u_z = Gradient_Primitive(iPoint,VEL_INDEX, 2);
+      v_z = Gradient_Primitive(iPoint,VEL_INDEX+1, 2);
+      w_x = Gradient_Primitive(iPoint,VEL_INDEX+2, 0);
+      w_y = Gradient_Primitive(iPoint,VEL_INDEX+2, 1);
+    }
+
+    Vorticity(iPoint,0) = w_y-v_z;
+    Vorticity(iPoint,1) = -(w_x-u_z);
+    Vorticity(iPoint,2) = v_x-u_y;
+
+  }
+  return false;
+}
+
+bool CNEMONSVariable::SetPrimVar(unsigned long iPoint, su2double eddy_visc, su2double turb_ke, CFluidModel *FluidModel) {
 
   fluidmodel = static_cast<CNEMOGas*>(FluidModel);
 
   /*--- Convert conserved to primitive variables ---*/
-  bool nonPhys = Cons2PrimVar(Solution[iPoint], Primitive[iPoint], dPdU[iPoint], dTdU[iPoint], dTvedU[iPoint], eves[iPoint], Cvves[iPoint]);
+  bool nonPhys = Cons2PrimVar(Solution[iPoint], Primitive[iPoint], dPdU[iPoint], dTdU[iPoint], dTvedU[iPoint], eves[iPoint],
+                              Cvves[iPoint], turb_ke);
 
   /*--- Reset solution to previous one, if nonphys ---*/
   if (nonPhys) {
-    for (iVar = 0; iVar < nVar; iVar++)
+    for (auto iVar = 0u; iVar < nVar; iVar++)
       Solution(iPoint,iVar) = Solution_Old(iPoint,iVar);
 
     /*--- Recompute Primitive from previous solution ---*/
-    Cons2PrimVar(Solution[iPoint], Primitive[iPoint], dPdU[iPoint], dTdU[iPoint], dTvedU[iPoint], eves[iPoint], Cvves[iPoint]);
+    Cons2PrimVar(Solution[iPoint], Primitive[iPoint], dPdU[iPoint], dTdU[iPoint], dTvedU[iPoint], eves[iPoint],
+                 Cvves[iPoint], turb_ke);
   }
 
   /*--- Set additional point quantities ---*/
@@ -99,7 +123,7 @@ bool CNEMONSVariable::SetPrimVar(unsigned long iPoint, CFluidModel *FluidModel) 
   SetVelocity2(iPoint);
 
   Ds = fluidmodel->GetDiffusionCoeff();
-  for (iSpecies = 0; iSpecies < nSpecies; iSpecies++)
+  for (auto iSpecies = 0u; iSpecies < nSpecies; iSpecies++)
     DiffusionCoeff(iPoint, iSpecies) = Ds[iSpecies];
 
   LaminarViscosity(iPoint) = fluidmodel->GetViscosity();

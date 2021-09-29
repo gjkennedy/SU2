@@ -37,6 +37,13 @@
  */
 class CNEMONSVariable final : public CNEMOEulerVariable {
 private:
+  su2double inv_TimeScale;      /*!< \brief Inverse of the reference time scale. */
+
+  VectorType Tau_Wall;          /*!< \brief Magnitude of the wall shear stress from a wall function. */
+  VectorType DES_LengthScale;   /*!< \brief DES Length Scale. */
+  VectorType Roe_Dissipation;   /*!< \brief Roe low dissipation coefficient. */
+  VectorType Vortex_Tilting;    /*!< \brief Value of the vortex tilting variable for DES length scale computation. */
+
   VectorType Prandtl_Lam;       /*!< \brief Laminar Prandtl number. */
   VectorType Temperature_Ref;   /*!< \brief Reference temperature of the fluid. */
   VectorType Viscosity_Ref;     /*!< \brief Reference viscosity of the fluid. */
@@ -48,13 +55,6 @@ private:
   VectorType ThermalCond_ve;    /*!< \brief V-E thermal conductivity of the gas mixture. */
   vector<su2double> thermalconductivities;
   vector<su2double> Ds;
-
-  su2double inv_TimeScale;      /*!< \brief Inverse of the reference time scale. */
-
-  VectorType Tau_Wall;          /*!< \brief Magnitude of the wall shear stress from a wall function. */
-  VectorType DES_LengthScale;   /*!< \brief DES Length Scale. */
-  VectorType Roe_Dissipation;   /*!< \brief Roe low dissipation coefficient. */
-  VectorType Vortex_Tilting;    /*!< \brief Value of the vortex tilting variable for DES length scale computation. */
 
 public:
 
@@ -78,6 +78,18 @@ public:
                   unsigned long val_nPrimVarGrad, const CConfig *config, CNEMOGas *fluidmodel);
 
   /*!
+   * \brief Constructor of the class.
+   * \param[in] val_solution - Pointer to the flow value (initialization value).
+   * \param[in] val_nDim - Number of dimensions of the problem.
+   * \param[in] val_nVar - Number of conserved variables.
+   * \param[in] val_nPrimVar - Number of primitive variables.
+   * \param[in] val_nPrimgVarGrad - Number of primitive gradient variables.
+   * \param[in] config - Definition of the particular problem.
+   */
+  CNEMONSVariable(su2double *val_solution, unsigned long val_nDim, unsigned long val_nVar,
+                  unsigned long val_nPrimVar, unsigned long val_nPrimVarGrad, unsigned long npoint,
+                  CConfig *config);
+
    * \brief Get the primitive variables for all points.
    * \return Reference to primitives.
    */
@@ -86,7 +98,13 @@ public:
   /*!
    * \brief Set all the primitive variables for compressible flows.
    */
-  bool SetPrimVar(unsigned long iPoint, CFluidModel *FluidModel) final;
+  bool SetPrimVar(unsigned long iPoint, su2double eddy_visc, su2double turb_ke, CFluidModel *FluidModel) override;
+  using CVariable::SetPrimVar;
+
+  /*!
+   * \brief Set the vorticity value.
+   */
+  bool SetVorticity(void);
 
   /*!
    * \overload

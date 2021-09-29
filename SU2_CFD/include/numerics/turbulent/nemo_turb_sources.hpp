@@ -1,5 +1,5 @@
 ﻿/*!
- * \file turb_sources.hpp
+ * \file nemo_turb_sources.hpp
  * \brief Delarations of numerics classes for integration of source
  *        terms in turbulence problems.
  * \author F. Palacios, T. Economon
@@ -31,12 +31,12 @@
 #include "../scalar/scalar_sources.hpp"
 
 /*!
- * \class CSourcePieceWise_TurbSA
+ * \class CNEMOSourcePieceWise_TurbSA
  * \brief Class for integrating the source terms of the Spalart-Allmaras turbulence model equation.
  * \ingroup SourceDiscr
  * \author A. Bueno.
  */
-class CSourceBase_TurbSA : public CNumerics {
+class CNEMOSourceBase_TurbSA : public CNEMONumerics {
 protected:
   su2double cv1_3;
   su2double k2;
@@ -70,7 +70,11 @@ public:
    * \param[in] val_nVar - Number of variables of the problem.
    * \param[in] config - Definition of the particular problem.
    */
-  CSourceBase_TurbSA(unsigned short val_nDim, unsigned short val_nVar, const CConfig* config);
+  CNEMOSourceBase_TurbSA(unsigned short val_nDim, unsigned short val_nVar,
+                         unsigned short val_nVar_NEMO,
+                         unsigned short val_nPrimVar,
+                         unsigned short val_nPrimVarGrad,
+                         const CConfig* config);
 
   /*!
    * \brief Residual for source term integration.
@@ -120,12 +124,12 @@ public:
 
 
 /*!
- * \class CSourcePieceWise_TurbSA
+ * \class CNEMOSourcePieceWise_TurbSA
  * \brief Class for integrating the source terms of the Spalart-Allmaras turbulence model equation.
  * \ingroup SourceDiscr
  * \author A. Bueno.
  */
-class CSourcePieceWise_TurbSA final : public CSourceBase_TurbSA {
+class CNEMOSourcePieceWise_TurbSA final : public CNEMOSourceBase_TurbSA {
 private:
   su2double nu, Ji, fv1, fv2, ft2, Omega, S, Shat, inv_Shat, dist_i_2, Ji_2, Ji_3, inv_k2_d2;
   su2double r, g, g_6, glim, fw;
@@ -143,7 +147,11 @@ public:
    * \param[in] val_nVar - Number of variables of the problem.
    * \param[in] config - Definition of the particular problem.
    */
-  CSourcePieceWise_TurbSA(unsigned short val_nDim, unsigned short val_nVar, const CConfig* config);
+  CNEMOSourcePieceWise_TurbSA(unsigned short val_nDim, unsigned short val_nVar,
+                              unsigned short val_nVar_NEMO,
+                              unsigned short val_nPrimVar,
+                              unsigned short val_nPrimVarGrad,
+                              const CConfig* config);
 
   /*!
    * \brief Residual for source term integration.
@@ -155,13 +163,13 @@ public:
 };
 
 /*!
- * \class CSourcePieceWise_TurbSA_COMP
+ * \class CNEMOSourcePieceWise_TurbSA_COMP
  * \brief Class for integrating the source terms of the Spalart-Allmaras CC modification turbulence model equation.
  * \ingroup SourceDiscr
  * \author E.Molina, A. Bueno.
  * \version 7.2.0 "Blackbird"
  */
-class CSourcePieceWise_TurbSA_COMP final : public CSourceBase_TurbSA {
+class CNEMOSourcePieceWise_TurbSA_COMP final : public CNEMOSourceBase_TurbSA {
 private:
   su2double nu, Ji, fv1, fv2, ft2, Omega, S, Shat, inv_Shat, dist_i_2, Ji_2, Ji_3, inv_k2_d2;
   su2double r, g, g_6, glim, fw;
@@ -178,7 +186,11 @@ public:
    * \param[in] val_nVar - Number of variables of the problem.
    * \param[in] config - Definition of the particular problem.
    */
-  CSourcePieceWise_TurbSA_COMP(unsigned short val_nDim, unsigned short val_nVar, const CConfig* config);
+  CNEMOSourcePieceWise_TurbSA_COMP(unsigned short val_nDim, unsigned short val_nVar,
+                                   unsigned short val_nVar_NEMO,
+                                   unsigned short val_nPrimVar,
+                                   unsigned short val_nPrimVarGrad,
+                                   const CConfig* config);
 
   /*!
    * \brief Residual for source term integration.
@@ -190,13 +202,13 @@ public:
 };
 
 /*!
- * \class CSourcePieceWise_TurbSA_E
+ * \class CNEMOSourcePieceWise_TurbSA_E
  * \brief Class for integrating the source terms of the Spalart-Allmaras Edwards modification turbulence model equation.
  * \ingroup SourceDiscr
  * \author E.Molina, A. Bueno.
  * \version 7.2.0 "Blackbird"
  */
-class CSourcePieceWise_TurbSA_E final : public CSourceBase_TurbSA {
+class CNEMOSourcePieceWise_TurbSA_E final : public CNEMOSourceBase_TurbSA {
 private:
   su2double nu, Ji, fv1, fv2, ft2, Omega, S, Shat, inv_Shat, dist_i_2, Ji_2, Ji_3, inv_k2_d2;
   su2double r, g, g_6, glim, fw;
@@ -212,7 +224,11 @@ public:
    * \param[in] val_nVar - Number of variables of the problem.
    * \param[in] config - Definition of the particular problem.
    */
-  CSourcePieceWise_TurbSA_E(unsigned short val_nDim, unsigned short val_nVar, const CConfig* config);
+  CNEMOSourcePieceWise_TurbSA_E(unsigned short val_nDim, unsigned short val_nVar,
+                                unsigned short val_nVar_NEMO,
+                                unsigned short val_nPrimVar,
+                                unsigned short val_nPrimVarGrad,
+                                const CConfig* config);
 
   /*!
    * \brief Residual for source term integration.
@@ -223,13 +239,13 @@ public:
 };
 
 /*!
- * \class CSourcePieceWise_TurbSA_E_COMP
+ * \class CNEMOSourcePieceWise_TurbSA_E_COMP
  * \brief Class for integrating the source terms of the Spalart-Allmaras Edwards modification with CC turbulence model equation.
  * \ingroup SourceDiscr
  * \author E.Molina, A. Bueno.
  * \version 7.2.0 "Blackbird"
  */
-class CSourcePieceWise_TurbSA_E_COMP : public CSourceBase_TurbSA {
+class CNEMOSourcePieceWise_TurbSA_E_COMP : public CNEMOSourceBase_TurbSA {
 private:
   su2double nu, Ji, fv1, fv2, ft2, Omega, S, Shat, inv_Shat, dist_i_2, Ji_2, Ji_3, inv_k2_d2;
   su2double r, g, g_6, glim, fw;
@@ -247,7 +263,11 @@ public:
    * \param[in] val_nVar - Number of variables of the problem.
    * \param[in] config - Definition of the particular problem.
    */
-  CSourcePieceWise_TurbSA_E_COMP(unsigned short val_nDim, unsigned short val_nVar, const CConfig* config);
+  CNEMOSourcePieceWise_TurbSA_E_COMP(unsigned short val_nDim, unsigned short val_nVar,
+                                     unsigned short val_nVar_NEMO,
+                                     unsigned short val_nPrimVar,
+                                     unsigned short val_nPrimVarGrad,
+                                     const CConfig* config);
 
   /*!
    * \brief Residual for source term integration.
@@ -258,12 +278,12 @@ public:
 };
 
 /*!
- * \class CSourcePieceWise_TurbSA_Neg
+ * \class CNEMOSourcePieceWise_TurbSA_Neg
  * \brief Class for integrating the source terms of the Spalart-Allmaras turbulence model equation.
  * \ingroup SourceDiscr
  * \author F. Palacios
  */
-class CSourcePieceWise_TurbSA_Neg : public CSourceBase_TurbSA {
+class CNEMOSourcePieceWise_TurbSA_Neg : public CNEMOSourceBase_TurbSA {
 private:
   su2double nu, Ji, fv1, fv2, ft2, Omega, S, Shat, inv_Shat, dist_i_2, Ji_2, Ji_3, inv_k2_d2;
   su2double r, g, g_6, glim, fw;
@@ -278,8 +298,11 @@ public:
    * \param[in] val_nVar - Number of variables of the problem.
    * \param[in] config - Definition of the particular problem.
    */
-  CSourcePieceWise_TurbSA_Neg(unsigned short val_nDim, unsigned short val_nVar, const CConfig* config);
-
+  CNEMOSourcePieceWise_TurbSA_Neg(unsigned short val_nDim, unsigned short val_nVar,
+                                  unsigned short val_nVar_NEMO,
+                                  unsigned short val_nPrimVar,
+                                  unsigned short val_nPrimVarGrad,
+                                  const CConfig* config);
   /*!
    * \brief Residual for source term integration.
    * \param[in] config - Definition of the particular problem.
@@ -290,12 +313,12 @@ public:
 };
 
 /*!
- * \class CSourcePieceWise_TurbSST
+ * \class CNEMOSourcePieceWise_TurbSST
  * \brief Class for integrating the source terms of the Menter SST turbulence model equations.
  * \ingroup SourceDiscr
  * \author A. Campos.
  */
-class CSourcePieceWise_TurbSST final : public CNumerics {
+class CNEMOSourcePieceWise_TurbSST final : public CNEMONumerics {
 private:
   su2double F1_i,
   F1_j,
@@ -374,8 +397,10 @@ public:
    * \param[in] val_nVar - Number of variables of the problem.
    * \param[in] config - Definition of the particular problem.
    */
-  CSourcePieceWise_TurbSST(unsigned short val_nDim, unsigned short val_nVar, const su2double* constants,
-                           su2double val_kine_Inf, su2double val_omega_Inf, const CConfig* config);
+  CNEMOSourcePieceWise_TurbSST(unsigned short val_nDim, unsigned short val_nVar, unsigned short val_nVar_NEMO,
+                               unsigned short val_nPrimVar,unsigned short val_nPrimVarGrad,
+                               const su2double* constants, su2double val_kine_Inf,
+                               su2double val_omega_Inf, const CConfig* config);
 
   /*!
    * \brief Set the value of the first blending function.
