@@ -380,12 +380,10 @@ passivedouble CDriver::GetVertexNormalHeatFlux(unsigned short iMarker, unsigned 
 
 //   return SU2_TYPE::GetValue(vertexWallHeatFlux);
 
-
   CSolver *solver = solver_container[ZONE_0][INST_0][MESH_0][FLOW_SOL];
 
   return SU2_TYPE::GetValue(solver->GetVertexNormalHeatFlux(iMarker, iVertex));
 }
-
 
 void CDriver::SetVertexNormalHeatFlux_Adjoint(unsigned short iMarker, unsigned long iVertex,
                                               passivedouble val_Adjoint){
@@ -394,10 +392,6 @@ void CDriver::SetVertexNormalHeatFlux_Adjoint(unsigned short iMarker, unsigned l
 
   solver->StoreVertexNormalHeatFluxAdjoint(iMarker, iVertex, val_Adjoint);
 }
-
-
-
-
 
 void CDriver::SetVertexNormalHeatFlux(unsigned short iMarker, unsigned long iVertex, passivedouble val_WallHeatFlux){
 

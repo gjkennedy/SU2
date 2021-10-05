@@ -149,7 +149,7 @@ protected:
 
   vector<vector<su2double> > NormalHeatFlux;          /*- Temporary, this will be moved to a new postprocessing structure once in place -*/
   vector<vector<su2double> > NormalHeatFluxAdjoint;   /*- Also temporary -*/
-  
+
   string SolverName;      /*!< \brief Store the name of the solver for output purposes. */
 
   /*!
@@ -4317,7 +4317,6 @@ public:
    * \brief Store the adjoints of the vertex tractions.
    * \param[in] iMarker  - Index of the marker
    * \param[in] iVertex  - Index of the relevant vertex
-   * \param[in] iDim     - Dimension
    * \param[in] val_adjoint - Value received for the adjoint (from another solver)
    */
   inline void StoreVertexNormalHeatFluxAdjoint(unsigned short iMarker,
@@ -4331,7 +4330,7 @@ public:
    * \param[in] geometry - Geometrical definition.
    * \param[in] config   - Definition of the particular problem.
    */
-  void SetVertexNormalHeatFluxAdjoint(CGeometry *geometry, const CConfig *config); 
+  void SetVertexNormalHeatFluxAdjoint(CGeometry *geometry, const CConfig *config);
 
   /*!
    * \brief Get minimun volume in the mesh
